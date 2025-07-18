@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Information</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/candidates.css') }}">
+</head>
+<body>
+    <h2>Candidate List</h2>
+    <div class="navigation">
+        <a href="{{ url_for('dashboard') }}" class="btn" aria-label="Back to Dashboard">Back to Dashboard</a>
+        <a href="{{ url_for('download_candidates_csv') }}" class="btn" style="margin-left: 10px;" aria-label="Download Candidates CSV">Download CSV</a>
+    </div>
+    <div class="table-container">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>City</th>
+                <th>Position</th>
+                <th>Has Experience</th>
+                <th>Years of Experience</th>
+                <th>Tech Stack</th>
+                <th>Submission Date</th>
+            </tr>
+            {% for candidate in candidates %}
+            <tr>
+                <td>{{ candidate.id }}</td>
+                <td>{{ candidate.full_name }}</td>
+                <td>{{ candidate.email }}</td>
+                <td>{{ candidate.phone or 'N/A' }}</td>
+                <td>{{ candidate.city or 'N/A' }}</td>
+                <td>{{ candidate.position or 'N/A' }}</td>
+                <td>{{ 'Yes' if candidate.has_experience else 'No' }}</td>
+                <td>{{ candidate.years_experience or 'N/A' }}</td>
+                <td>{{ candidate.tech_stack or 'N/A' }}</td>
+                <td>{{ candidate.submitted_at.strftime('%Y-%m-%d %I:%M:%S %p IST') if candidate.submitted_at else 'N/A' }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,139 @@
+body {
+    background: linear-gradient(135deg, #e0eafc, #cfdef3);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(60, 120, 200, 0.15);
+    padding: 40px 32px 32px 32px;
+    max-width: 480px;
+    width: 100%;
+    margin: 40px 0;
+    position: relative;
+}
+
+h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 28px;
+    font-size: 2.1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+label {
+    display: block;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    color: #34495e;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+input.form-control, select.form-select, .select2-container--default .select2-selection--multiple {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #bfc9d1;
+    background: #f7fafd;
+    font-size: 1rem;
+    margin-bottom: 6px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input.form-control:focus, select.form-select:focus, .select2-container--default .select2-selection--multiple:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px #eaf6fb;
+    outline: none;
+}
+
+button[type="submit"] {
+    width: 100%;
+    background: linear-gradient(90deg, #3498db 60%, #6dd5fa 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 24px;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.08);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+button[type="submit"]:hover {
+    background: linear-gradient(90deg, #217dbb 60%, #4fc3f7 100%);
+    transform: translateY(-2px) scale(1.01);
+}
+
+.alert {
+    border-radius: 8px;
+    font-size: 0.98rem;
+    margin-bottom: 12px;
+}
+
+#experience_fields {
+    background: #f3f8fd;
+    border-radius: 10px;
+    padding: 18px 16px 10px 16px;
+    margin-top: 10px;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.06);
+}
+
+#experience_fields h5 {
+    color: #217dbb;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.select2-container--default .select2-selection--multiple {
+    background: #f7fafd;
+    border: 1px solid #bfc9d1;
+    border-radius: 8px;
+    min-height: 44px;
+    padding: 4px 8px;
+    font-size: 1rem;
+    box-shadow: none;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    margin: 2px 4px 2px 0;
+    font-size: 0.98rem;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #eaf6fb;
+    margin-right: 6px;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 18px 6px 18px 6px;
+        max-width: 98vw;
+    }
+    h2 {
+        font-size: 1.3rem;
+    }
+    label {
+        font-size: 0.98rem;
+    }
+    button[type="submit"] {
+        font-size: 1rem;
+        padding: 12px 0;
+    }
+} 

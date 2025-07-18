@@ -1,0 +1,170 @@
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    padding: 20px;
+}
+.container {
+    max-width: 900px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    padding: 30px;
+    margin: 0 auto;
+}
+h2 { 
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e9ecef;
+}
+.question {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+}
+.question-text {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 15px;
+    color: #495057;
+}
+.option {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+}
+.option:hover {
+    background-color: #e3f2fd;
+    border-color: #007bff;
+}
+.option input[type="radio"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+.option label {
+    cursor: pointer;
+    margin-bottom: 0;
+    font-weight: normal;
+}
+.submit-btn { 
+    background-color: #28a745;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 30px auto 0;
+}
+.submit-btn:hover { 
+    background-color: #218838;
+    transform: translateY(-1px);
+}
+.progress-info {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+}
+hr {
+    margin: 20px 0;
+    border-top: 1px solid #dee2e6;
+}
+.timer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+    display: none;
+}
+.timer.warning {
+    background-color: #ffc107;
+    color: #000;
+}
+.timer.danger {
+    background-color: #dc3545;
+    animation: pulse 1s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+.submitted-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+.submitted-message {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #28a745;
+}
+.form-disabled {
+    pointer-events: none;
+    opacity: 0.7;
+}
+.video-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 1000;
+}
+video {
+    width: 240px;
+    height: 180px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.webcam-prompt {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+}
+.webcam-prompt-message {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #333;
+    max-width: 400px;
+}
+.hidden {
+    display: none;
+} 
