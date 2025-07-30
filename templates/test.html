@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assessment Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/test.css') }}">
+</head>
+<body>
+    <div class="webcam-prompt" id="webcamPrompt">
+        <div class="webcam-prompt-message">
+            <h3>Webcam Access Required</h3>
+            <p>Please grant permission to access your webcam and microphone to start the test.</p>
+            <p id="webcamError" style="color: red; display: none;">Failed to access webcam. Please ensure permissions are granted and try again.</p>
+            <button id="retryWebcam" class="btn btn-primary" style="display: none;">Retry</button>
+        </div>
+    </div>
+
+    <div class="timer" id="timer">Time Remaining: {{ test_duration }}:00</div>
+    
+    <div class="submitted-overlay" id="submittedOverlay">
+        <div class="submitted-message">
+            <h3>Test Submitted!</h3>
+            <p>Your answers and video are being processed.</p>
+            <p>Please wait...</p>
+        </div>
+    </div>
+    
+    <div class="video-container">
+        <video id="test-video" autoplay muted></video>
+    </div>
+    
+    <div class="container" id="testContainer">
+        <h2>Assessment Test</h2>
+        
+        <div class="progress-info"></div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} mt-3">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="post" id="testForm" class="hidden">
+            <input type="hidden" name="current_set" value="{{ current_set }}">
+            <input type="hidden" name="candidate_id" value="{{ candidate_id }}">
+            {% for q in questions %}
+            <div class="question">
+                <div class="question-text">
+                    <strong>Q{{ loop.index }}: {{ q.question_text }}</strong>
+                </div>
+                
+                <div class="option">
+                    <label>
+                        <input type="radio" name="q_{{ q.question_id }}" value="A">
+                        A. {{ q.option_a }}
+                    </label>
+                </div>
+                
+                <div class="option">
+                    <label>
+                        <input type="radio" name="q_{{ q.question_id }}" value="B">
+                        B. {{ q.option_b }}
+                    </label>
+                </div>
+                
+                <div class="option">
+                    <label>
+                        <input type="radio" name="q_{{ q.question_id }}" value="C">
+                        C. {{ q.option_c }}
+                    </label>
+                </div>
+                
+                <div class="option">
+                    <label>
+                        <input type="radio" name="q_{{ q.question_id }}" value="D">
+                        D. {{ q.option_d }}
+                    </label>
+                </div>
+            </div>
+            
+            {% if not loop.last %}
+            <hr>
+            {% endif %}
+            {% endfor %}
+            
+            <button type="submit" class="submit-btn" id="submitBtn">
+                Submit Assessment
+            </button>
+        </form>
+    </div>
+
+    <script>
+      window.CANDIDATE_ID = {{ candidate_id|tojson }};
+      window.ATTEMPT_NUMBER = {{ attempt_number|tojson }};
+      window.TEST_DURATION = {{ test_duration|tojson }};
+      window.TOTAL_QUESTIONS = {{ questions|length }};
+    </script>
+    <script src="{{ url_for('static', filename='js/test.js') }}"></script>
+</body>
+</html>
