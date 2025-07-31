@@ -101,14 +101,9 @@ class Score(Base):
     correct_answers = Column(Integer)
     score_percent = Column(DECIMAL(5,2))
     submitted_at = Column(DateTime)
-    tab_switch_count = Column(Integer, default=0)  # <-- Added for tab switch tracking
+    # tab_switch_count removed
 
-class TabSwitchEvent(Base):
-    __tablename__ = 'tab_switch_events'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    candidate_id = Column(Integer, ForeignKey('candidates.id'))
-    attempt_number = Column(Integer)
-    timestamp = Column(DateTime, default=datetime.now)
+
 
 # ---------- UTILITY FUNCTIONS ----------
 def validate_email(email): 
@@ -269,7 +264,7 @@ def get_next_ordered_set(taken_sets):
 
 def get_questions(set_number):
     """Get questions for a specific set"""
-    db_session = None
+    db_session = 'None'
     try:
         db_session = Session()
         questions = db_session.query(Question).filter(Question.set_number == set_number).\
@@ -298,23 +293,21 @@ def get_questions(set_number):
             db_session.close()
 
 def assign_questions_to_history(candidate_id, set_number, questions):
-    """Assign questions to test history for tracking"""
-    db_session = None
+    db_session = 'None'
     try:
         db_session = Session()
         # Check if questions are already assigned
         existing_count = db_session.query(TestHistory).\
             join(Question, TestHistory.question_id == Question.question_id).\
             filter(TestHistory.candidate_id == candidate_id, Question.set_number == set_number).count()
-        
         if existing_count > 0:
             print(f"Set {set_number} already assigned to candidate {candidate_id} ({existing_count} questions)")
             return True
-        
+
         # Get next attempt number
         attempt_number = db_session.query(func.coalesce(func.max(TestHistory.attempt_number), 0) + 1).\
             filter(TestHistory.candidate_id == candidate_id).scalar() or 1
-        
+
         current_time = datetime.now()
         for question in questions:
             test_history = TestHistory(
@@ -324,7 +317,7 @@ def assign_questions_to_history(candidate_id, set_number, questions):
                 assigned_at=current_time
             )
             db_session.add(test_history)
-        
+
         db_session.commit()
         print(f"Assigned {len(questions)} questions to history for candidate {candidate_id}, set {set_number}, attempt {attempt_number}")
         return True
@@ -339,15 +332,13 @@ def assign_questions_to_history(candidate_id, set_number, questions):
             db_session.close()
 
 def save_test_results(candidate_id, set_number, questions, answers):
-    """Save test results to database"""
-    db_session = None
+    db_session = 'None'
     try:
         db_session = Session()
-        # Check for existing answers
+        # Remove existing answers for this candidate and set
         existing_answers = db_session.query(Answer).\
             join(Question, Answer.question_id == Question.question_id).\
             filter(Answer.candidate_id == candidate_id, Question.set_number == set_number).count()
-        
         if existing_answers > 0:
             print(f"Answers already exist for candidate {candidate_id}, set {set_number}. Updating...")
             db_session.query(Answer).\
@@ -357,29 +348,21 @@ def save_test_results(candidate_id, set_number, questions, answers):
                 filter(Score.candidate_id == candidate_id, Score.total_questions == db_session.query(func.count()).\
                        select_from(Question).filter(Question.set_number == set_number).scalar()).delete(synchronize_session=False)
             db_session.commit()
-        
+
         correct_answers = 0
         total_questions = len(questions)
         answered_questions = len([a for a in answers.values() if a and a.strip()])
-        
         print(f"Processing {total_questions} questions for candidate {candidate_id}, set {set_number}")
         print(f"Candidate answered {answered_questions} questions")
-        
+
         current_time = datetime.now()
-        
-        # Get next attempt number for scores
-        attempt_number = db_session.query(func.coalesce(func.max(Score.attempt_number), 0) + 1).\
-            filter(Score.candidate_id == candidate_id).scalar() or 1
-        
         for question in questions:
             question_id = question["question_id"]
             user_answer = answers.get(question_id, "").strip()
-            
             is_correct = 0
             if user_answer and user_answer == question["correct_option"]:
                 is_correct = 1
                 correct_answers += 1
-            
             answer = Answer(
                 candidate_id=candidate_id,
                 question_id=question_id,
@@ -388,12 +371,15 @@ def save_test_results(candidate_id, set_number, questions, answers):
                 answered_at=current_time
             )
             db_session.add(answer)
-        
+
         score_percentage = (correct_answers / total_questions * 100) if total_questions > 0 else 0
-        
         print(f"Results: {correct_answers} correct out of {answered_questions} answered, {total_questions} total")
         print(f"Score percentage: {score_percentage:.1f}%")
-        
+
+        # Get next attempt number for scores
+        attempt_number = db_session.query(func.coalesce(func.max(Score.attempt_number), 0) + 1).\
+            filter(Score.candidate_id == candidate_id).scalar() or 1
+
         score = Score(
             candidate_id=candidate_id,
             attempt_number=attempt_number,
@@ -403,7 +389,6 @@ def save_test_results(candidate_id, set_number, questions, answers):
             submitted_at=current_time
         )
         db_session.add(score)
-        
         db_session.commit()
         print(f"Successfully saved results for candidate {candidate_id}, set {set_number}")
         return True
@@ -651,35 +636,7 @@ def upload_video():
     
     return jsonify({'message': 'Error uploading video'}), 400
 
-@app.route('/tab-switch', methods=['POST'])
-def tab_switch():
-    if 'candidate_id' not in session or 'attempt_number' not in session:
-        return jsonify({'message': 'Not logged in'}), 401
 
-    data = request.get_json()
-    count = data.get('count', 0)
-    timestamp = data.get('timestamp')
-    candidate_id = session['candidate_id']
-    attempt_number = session['attempt_number']
-
-    db_session = None
-    try:
-        db_session = Session()
-        # Update tab_switch_count in scores table
-        score = db_session.query(Score).filter_by(candidate_id=candidate_id, attempt_number=attempt_number).first()
-        if score:
-            score.tab_switch_count = count
-        # Log event in tab_switch_events table
-        event = TabSwitchEvent(candidate_id=candidate_id, attempt_number=attempt_number, timestamp=timestamp or datetime.now())
-        db_session.add(event)
-        db_session.commit()
-        return jsonify({'message': 'Tab switch recorded'})
-    except Exception as e:
-        print(f"Error updating tab switch count: {e}")
-        return jsonify({'message': 'Error'}), 500
-    finally:
-        if db_session:
-            db_session.close()
 
 @app.route('/completed')
 def completed():
